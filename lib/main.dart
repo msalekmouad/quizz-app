@@ -1,13 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:quizz_app/components/QuestionWidget.dart';
 import 'package:quizz_app/question.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+// ignore: must_be_immutable
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new _MyAppState();
+  }
+}
+
+class _MyAppState extends State<MyApp>{
+  //Question index
+  int _qIndex = 0;
+
+  //Answer pressed function
+  void _ProcessAnswer(Question q, String a) {
+    if (q.rightAnswer == a) {
+      print("You got it right");
+      setState(() {
+        _qIndex = _qIndex + 1;
+      });
+    } else {
+      print("Wrong answer");
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    //Question index
-    int qIndex = 0;
 
     //Hard coding Quizz questions
     Question q1 = Question(
@@ -26,57 +49,56 @@ class MyApp extends StatelessWidget {
     //Questions List
     var questions = [q1, q2, q3];
 
-    //Answer pressed function
-
-    void ProcessAnswer(Question q, String a){
-      if(q.rightAnswer == a){
-        print("You got it right");
-        qIndex++;
-      }
-      else{
-        print("Wrong answer");
-      }
-    }
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text('Quizz App'),
           elevation: 0,
-
+          backgroundColor: Colors.teal[900],
         ),
         body: Column(
           children: [
-            Center(
-                child: Padding(
-                  child: Text(
-                    questions[0].question,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+            QuestionWidget(questions[_qIndex].question),
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  SizedBox(
+                    child: FlatButton(
+                      child: Text(questions[_qIndex].answers[0]),
+                      color: Colors.teal,
+                      textColor: Colors.white,
+                      onPressed: () => {
+                        _ProcessAnswer(questions[_qIndex], questions[_qIndex].answers[0])
+                      },
                     ),
+                    width: double.infinity,
                   ),
-                  padding: EdgeInsets.all(50),
-            )),
-            RaisedButton(
-              child: Text(questions[0].answers[0]),
-              onPressed: ()=>{
-                ProcessAnswer(questions[0], questions[0].answers[0])
-              },
-            ),
-            RaisedButton(
-              child: Text(questions[0].answers[1]),
-              onPressed: ()=>{
-                ProcessAnswer(questions[0], questions[0].answers[1])
-              },
-            ),
-            RaisedButton(
-              child: Text(questions[0].answers[2]),
-              onPressed: ()=>{
-                ProcessAnswer(questions[0], questions[0].answers[2])
-              },
-            ),
+                  SizedBox(
+                    child: FlatButton(
+                      child: Text(questions[_qIndex].answers[1]),
+                      color: Colors.teal,
+                      textColor: Colors.white,
+                      onPressed: () => {
+                        _ProcessAnswer(questions[_qIndex], questions[_qIndex].answers[1])
+                      },
+                    ),
+                    width: double.infinity,
+                  ),
+                  SizedBox(
+                    child: FlatButton(
+                      child: Text(questions[_qIndex].answers[2]),
+                      color: Colors.teal,
+                      textColor: Colors.white,
+                      onPressed: () => {
+                        _ProcessAnswer(questions[_qIndex], questions[_qIndex].answers[2])
+                      },
+                    ),
+                    width: double.infinity,
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
