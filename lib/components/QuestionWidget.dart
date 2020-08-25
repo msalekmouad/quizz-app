@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class QuestionWidget extends StatelessWidget {
 
-  String questionText;
+  final String questionText;
   QuestionWidget(this.questionText);
 
   @override

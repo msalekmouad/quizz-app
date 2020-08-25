@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizz_app/components/AnswerWidget.dart';
 import 'package:quizz_app/components/QuestionWidget.dart';
 import 'package:quizz_app/question.dart';
 
@@ -12,43 +13,36 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<MyApp>{
+class _MyAppState extends State<MyApp> {
   //Question index
   int _qIndex = 0;
 
-  //Answer pressed function
-  void _ProcessAnswer(Question q, String a) {
-    if (q.rightAnswer == a) {
-      print("You got it right");
-      setState(() {
-        _qIndex = _qIndex + 1;
-      });
-    } else {
-      print("Wrong answer");
-    }
+  //Hard coding Quizz questions
+  static Question q1 = Question(
+      question: "Whats the biggest planet on solar system ?",
+      answers: ["Sun", "Jupiter", "Earth"],
+      rightAnswer: "Sun");
+  static Question q2 = Question(
+      question: "Whats the language spoken in Germany",
+      answers: ["Russian", "Arabic", "Dutch"],
+      rightAnswer: "Dutch");
+  static Question q3 = Question(
+      question: "Whats the population of Earth ?",
+      answers: ["10 Billion", "7.8 Billion", "5 Billion"],
+      rightAnswer: "7.8 Billion");
 
+  //Questions List
+  var questions = [q1, q2, q3];
+
+  //Answer pressed function
+  void _ProcessAnswer() {
+    setState(() {
+      _qIndex = _qIndex + 1;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    //Hard coding Quizz questions
-    Question q1 = Question(
-        question: "Whats the biggest planet on solar system ?",
-        answers: ["Sun", "Jupiter", "Earth"],
-        rightAnswer: "Sun");
-    Question q2 = Question(
-        question: "Whats the language spoken in Germany",
-        answers: ["Russian", "Arabic", "Dutch"],
-        rightAnswer: "Dutch");
-    Question q3 = Question(
-        question: "Whats the population of Earth ?",
-        answers: ["10 Billion", "7.8 Billion", "5 Billion"],
-        rightAnswer: "7.8 Billion");
-
-    //Questions List
-    var questions = [q1, q2, q3];
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -56,51 +50,29 @@ class _MyAppState extends State<MyApp>{
           elevation: 0,
           backgroundColor: Colors.teal[900],
         ),
-        body: Column(
-          children: [
-            QuestionWidget(questions[_qIndex].question),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
+        body: _qIndex < questions.length
+            ? Column(
                 children: [
-                  SizedBox(
-                    child: FlatButton(
-                      child: Text(questions[_qIndex].answers[0]),
-                      color: Colors.teal,
-                      textColor: Colors.white,
-                      onPressed: () => {
-                        _ProcessAnswer(questions[_qIndex], questions[_qIndex].answers[0])
-                      },
+                  QuestionWidget(questions[_qIndex].question),
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        ...questions[_qIndex].answers.map((e) {
+                          return AnswerWidget(_ProcessAnswer, e);
+                        }).toList()
+                      ],
                     ),
-                    width: double.infinity,
-                  ),
-                  SizedBox(
-                    child: FlatButton(
-                      child: Text(questions[_qIndex].answers[1]),
-                      color: Colors.teal,
-                      textColor: Colors.white,
-                      onPressed: () => {
-                        _ProcessAnswer(questions[_qIndex], questions[_qIndex].answers[1])
-                      },
-                    ),
-                    width: double.infinity,
-                  ),
-                  SizedBox(
-                    child: FlatButton(
-                      child: Text(questions[_qIndex].answers[2]),
-                      color: Colors.teal,
-                      textColor: Colors.white,
-                      onPressed: () => {
-                        _ProcessAnswer(questions[_qIndex], questions[_qIndex].answers[2])
-                      },
-                    ),
-                    width: double.infinity,
-                  ),
+                  )
                 ],
+              )
+            : Center(
+                child: Text(
+                  "Sorry No more questions !",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            )
-          ],
-        ),
+        backgroundColor: Colors.grey[200],
       ),
     );
   }
